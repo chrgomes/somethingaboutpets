@@ -38,12 +38,14 @@
 
   document.querySelectorAll('.paw-trail').forEach(function (trail) {
     var svg = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('viewBox', '0 0 1100 90');
+    // Size the trail to its real width so paws stay the same size on phones and desktops.
+    var W = Math.max(320, Math.min(1100, trail.clientWidth || 1100));
+    svg.setAttribute('viewBox', '0 0 ' + W + ' 90');
     svg.setAttribute('aria-hidden', 'true');
     svg.setAttribute('focusable', 'false');
-    var steps = 14;
+    var steps = Math.max(6, Math.round(W / 78));
     for (var i = 0; i < steps; i++) {
-      var x = 40 + i * (1020 / (steps - 1));
+      var x = 30 + i * ((W - 60) / (steps - 1));
       var side = i % 2 === 0 ? -1 : 1;
       var y = 45 + Math.sin(i / 2.2) * 10 + side * 11;
       var paw = pawPath();
@@ -94,7 +96,7 @@
   }
 
   /* 5. Yarn-ball back-to-top button. */
-  var yarn = document.querySelector('.yarn-top');
+  var yarn = document.querySelector('.yarn-top:not(.yarn-demo)');
   if (yarn) {
     var toggle = function () { yarn.classList.toggle('is-visible', window.scrollY > 600); };
     window.addEventListener('scroll', toggle, { passive: true });
