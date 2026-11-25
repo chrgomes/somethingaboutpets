@@ -1,0 +1,6 @@
+config/config.php
+sap-config.php
+vendor/
+*.sqlite
+*.log
+.DS_Store

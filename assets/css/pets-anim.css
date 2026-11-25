@@ -1,0 +1,130 @@
+/* =========================================================
+   Something About Pets – SVG pet animations
+   1. Logo mark that draws itself (header + footer)
+   2. Blinking eyes, wagging tongue, floppy ear
+   3. Paw-print trail that walks across the page on scroll
+   4. Hearts that float up from testimonial cards
+   5. Yarn-ball "back to top" button
+   All motion is switched off for people who prefer reduced motion.
+   ========================================================= */
+
+:root {
+  --sap-red: #e83a30;
+  --sap-ink: #0a1d22;
+}
+
+/* ---------- 1. Logo mark ---------- */
+.pet-mark { display: block; overflow: visible; color: var(--sap-ink); }
+.pet-mark .pm-stroke { stroke-dasharray: 1; stroke-dashoffset: 0; }
+
+.pet-mark--draw .pm-stroke { stroke-dashoffset: 1; animation: pm-draw 0.9s cubic-bezier(.6,.05,.35,1) forwards; }
+.pet-mark--draw .pm-fills > * { opacity: 0; transform-box: fill-box; transform-origin: center; animation: pm-pop .45s cubic-bezier(.3,1.6,.5,1) forwards; }
+.pet-mark--draw .pm-s1  { animation-delay: .05s; }
+.pet-mark--draw .pm-s2  { animation-delay: .55s; }
+.pet-mark--draw .pm-s3  { animation-delay: .8s; }
+.pet-mark--draw .pm-s4  { animation-delay: 1.15s; animation-duration: .35s; }
+.pet-mark--draw .pm-s5  { animation-delay: 1.3s;  animation-duration: .35s; }
+.pet-mark--draw .pm-s6  { animation-delay: 1.4s;  animation-duration: .45s; }
+.pet-mark--draw .pm-s7  { animation-delay: 1.45s; animation-duration: .35s; }
+.pet-mark--draw .pm-s8  { animation-delay: 1.75s; animation-duration: .35s; }
+.pet-mark--draw .pm-s9  { animation-delay: 1.2s;  animation-duration: .4s; }
+.pet-mark--draw .pm-s10 { animation-delay: 1.5s;  animation-duration: .3s; }
+.pet-mark--draw .pm-s11 { animation-delay: 1.6s;  animation-duration: .3s; }
+.pet-mark--draw .pm-nose          { animation-delay: 1.25s; }
+.pet-mark--draw .pm-dog-eyes      { animation-delay: 1.5s; }
+.pet-mark--draw .pm-cat-eyes      { animation-delay: 1.6s; }
+.pet-mark--draw .pm-fills circle  { animation-delay: 1.75s; }
+
+/* Wait for the element to scroll into view before drawing (set by pets-anim.js). */
+.pet-mark--waiting .pm-stroke,
+.pet-mark--waiting .pm-fills > * { animation-play-state: paused; }
+
+@keyframes pm-draw { to { stroke-dashoffset: 0; } }
+@keyframes pm-pop  { from { opacity: 0; transform: scale(.2); } to { opacity: 1; transform: scale(1); } }
+
+/* ---------- 2. Little life: blink, wag, flop ---------- */
+.pet-mark .pm-dog-eyes,
+.pet-mark .pm-cat-eyes { transform-box: fill-box; transform-origin: center; }
+.pet-mark .pm-dog-eyes ellipse,
+.pet-mark .pm-cat-eyes ellipse { transform-box: fill-box; transform-origin: center; animation: pm-blink 5s 2.4s infinite; }
+.pet-mark .pm-cat-eyes ellipse { animation-duration: 6.5s; animation-delay: 3.4s; }
+@keyframes pm-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+
+.pet-mark .pm-tongue { transform-box: fill-box; transform-origin: 30% 0%; animation: pm-pant 1.6s 2.2s ease-in-out infinite; }
+@keyframes pm-pant { 0%, 100% { transform: rotate(0deg) scaleY(1); } 50% { transform: rotate(-6deg) scaleY(1.12); } }
+
+.pet-mark .pm-dog-ear { transform-box: fill-box; transform-origin: 40% 0%; transition: transform .4s cubic-bezier(.3,1.6,.5,1); }
+.pet-mark:hover .pm-dog-ear,
+a:hover > .pet-mark .pm-dog-ear,
+a:focus-visible > .pet-mark .pm-dog-ear { transform: rotate(14deg); }
+a:hover > .pet-mark .pm-tongue { animation-duration: .5s; }
+
+/* Header logo */
+.sap-logo { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+.sap-logo .pet-mark { width: 92px; height: auto; }
+.sap-logo .sap-wordmark { height: 22px; width: auto; }
+@media (max-width: 991px) {
+  .sap-logo .pet-mark { width: 70px; }
+  .sap-logo .sap-wordmark { height: 17px; }
+}
+@media (max-width: 400px) {
+  .sap-logo .sap-wordmark { display: none; }
+}
+
+/* Footer: cat + dog peeking over the top edge of the footer */
+.sap-footer-peek { position: relative; height: 0; }
+.sap-footer-peek .pet-mark {
+  position: absolute; left: 50%; bottom: -6px; width: 220px; transform: translateX(-50%);
+  color: var(--sap-ink); pointer-events: auto;
+}
+@media (max-width: 576px) { .sap-footer-peek .pet-mark { width: 160px; } }
+footer { position: relative; }
+
+/* ---------- 3. Paw-print trail ---------- */
+.paw-trail { position: relative; width: 100%; max-width: 1100px; height: 90px; margin: 0 auto; overflow: hidden; }
+.paw-trail svg { width: 100%; height: 100%; display: block; }
+.paw-trail .paw { fill: var(--sap-red); opacity: 0; transform-box: fill-box; transform-origin: center; }
+.paw-trail.is-walking .paw { animation: paw-step 3.6s ease-out forwards; }
+@keyframes paw-step {
+  0%   { opacity: 0; transform: scale(.4); }
+  12%  { opacity: .9; transform: scale(1.08); }
+  20%  { opacity: .75; transform: scale(1); }
+  100% { opacity: .18; transform: scale(1); }
+}
+
+/* ---------- 4. Floating hearts on testimonials ---------- */
+.h2-testimonial-area .testimonial-content { position: relative; }
+.sap-heart {
+  position: absolute; width: 22px; height: 22px; pointer-events: none; color: var(--sap-red);
+  animation: heart-float 1.6s ease-out forwards; z-index: 10;
+}
+@keyframes heart-float {
+  0%   { opacity: 0; transform: translate(0, 0) scale(.4) rotate(0deg); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), -120px) scale(1.15) rotate(var(--rot, 10deg)); }
+}
+
+/* ---------- 5. Yarn-ball back-to-top ---------- */
+.yarn-top {
+  position: fixed; right: 22px; bottom: 22px; width: 54px; height: 54px; border: 0; padding: 0; background: none;
+  cursor: pointer; z-index: 999; opacity: 0; transform: translateY(30px); pointer-events: none;
+  transition: opacity .35s, transform .35s;
+}
+.yarn-top.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; animation: yarn-bob 2.4s ease-in-out infinite; }
+.yarn-top svg { width: 100%; height: 100%; overflow: visible; }
+.yarn-top .yarn-ball { transform-box: fill-box; transform-origin: center; transition: transform .6s; }
+.yarn-top:hover .yarn-ball, .yarn-top:focus-visible .yarn-ball { transform: rotate(-360deg); }
+.yarn-top .yarn-thread { stroke-dasharray: 60; stroke-dashoffset: 0; transition: stroke-dashoffset .6s; }
+.yarn-top:hover .yarn-thread { stroke-dashoffset: 60; }
+.yarn-top:focus-visible { outline: 3px solid var(--sap-ink); outline-offset: 4px; border-radius: 50%; }
+@keyframes yarn-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* ---------- Reduced motion: show everything, animate nothing ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .pet-mark .pm-stroke { animation: none !important; stroke-dashoffset: 0 !important; }
+  .pet-mark .pm-fills > *, .pet-mark .pm-fills ellipse, .pet-mark .pm-tongue { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .paw-trail .paw { animation: none !important; opacity: .35 !important; transform: none !important; }
+  .sap-heart { display: none; }
+  .yarn-top.is-visible { animation: none; }
+  .yarn-top .yarn-ball, .yarn-top .yarn-thread { transition: none; }
+}
