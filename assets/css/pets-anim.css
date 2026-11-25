@@ -30,6 +30,8 @@
 .pet-mark--draw .pm-s9  { animation-delay: 1.2s;  animation-duration: .4s; }
 .pet-mark--draw .pm-s10 { animation-delay: 1.5s;  animation-duration: .3s; }
 .pet-mark--draw .pm-s11 { animation-delay: 1.6s;  animation-duration: .3s; }
+.pet-mark--draw .pm-s12 { animation-delay: 1.5s;  animation-duration: .4s; }
+.pet-mark--draw .pm-s13 { animation-delay: 2.0s;  animation-duration: .2s; }
 .pet-mark--draw .pm-nose          { animation-delay: 1.25s; }
 .pet-mark--draw .pm-dog-eyes      { animation-delay: 1.5s; }
 .pet-mark--draw .pm-cat-eyes      { animation-delay: 1.6s; }

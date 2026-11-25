@@ -22,11 +22,13 @@ function pet_mark(string $class = '', bool $draw = true, string $label = 'Someth
     <!-- dog head -->
     <path class="pm-stroke pm-s3" pathLength="1" d="M990 193 L1036 183 C1061 136 1111 100 1171 98 C1241 98 1286 141 1301 215"/>
     <path class="pm-stroke pm-s4" pathLength="1" d="M1196 238 L1300 221"/>
-    <path class="pm-stroke pm-s5" pathLength="1" d="M1114 293 C1131 312 1161 313 1183 297"/>
-    <path class="pm-stroke pm-s6" pathLength="1" d="M1121 314 C1160 360 1214 398 1266 410"/>
-    <path class="pm-stroke pm-s7" pathLength="1" d="M1303 298 C1306 332 1301 370 1291 396"/>
+    <path class="pm-stroke pm-s5" pathLength="1" d="M1155 273 C1138 279 1121 289 1113 301"/>
+    <path class="pm-stroke pm-s6" pathLength="1" d="M1139 297 C1165 333 1200 365 1238 379 C1250 383 1260 384 1268 383"/>
+    <path class="pm-stroke pm-s7" pathLength="1" d="M1321 305 C1318 330 1312 352 1303 369"/>
+    <path class="pm-stroke pm-s12" pathLength="1" d="M1362 304 C1355 330 1342 352 1322 368 C1314 374 1306 378 1298 381"/>
     <g class="pm-tongue">
-      <path class="pm-stroke pm-s8" pathLength="1" d="M1266 406 C1262 442 1300 455 1319 433 C1331 419 1326 401 1318 395"/>
+      <path class="pm-stroke pm-s8" pathLength="1" d="M1266 386 C1262 405 1276 432 1295 444 C1312 453 1330 440 1333 420 C1335 405 1332 393 1326 386"/>
+      <path class="pm-stroke pm-s13" pathLength="1" d="M1304 395 C1306 405 1307 414 1306 424"/>
     </g>
     <!-- cat face -->
     <path class="pm-stroke pm-s9" pathLength="1" d="M782 247 C785 268 806 272 816 254 C826 272 849 268 852 244"/>
@@ -34,10 +36,10 @@ function pet_mark(string $class = '', bool $draw = true, string $label = 'Someth
     <path class="pm-stroke pm-s11" pathLength="1" d="M607 346 L697 345"/>
   </g>
   <g class="pm-fills" fill="currentColor">
-    <path class="pm-nose" d="M1262 227 C1301 218 1351 215 1386 221 C1393 246 1371 276 1341 293 C1311 306 1286 296 1271 276 C1263 263 1258 241 1262 227Z"/>
-    <g class="pm-dog-eyes"><ellipse cx="1135" cy="181" rx="16" ry="21"/><ellipse cx="1218" cy="183" rx="16" ry="21"/></g>
+    <path class="pm-nose" d="M1262 225 C1300 218 1350 214 1380 218 C1392 220 1393 232 1392 245 C1390 265 1383 288 1368 301 L1291 304 C1273 303 1262 291 1259 276 C1256 259 1256 239 1262 225Z"/>
+    <g class="pm-dog-eyes"><ellipse cx="1134" cy="186" rx="17" ry="23"/><ellipse cx="1221" cy="183" rx="17" ry="23"/></g>
     <g class="pm-cat-eyes"><ellipse cx="723" cy="262" rx="8" ry="12"/><ellipse cx="916" cy="236" rx="8" ry="12"/></g>
-    <circle cx="1236" cy="309" r="6"/><circle cx="1262" cy="326" r="6"/><circle cx="1229" cy="341" r="6"/>
+    <circle cx="1237" cy="311" r="7"/><circle cx="1264" cy="333" r="7"/><circle cx="1227" cy="342" r="7"/>
   </g>
 </svg>
 SVG;
