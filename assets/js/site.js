@@ -42,6 +42,14 @@
     });
   });
 
+  // Phone-friendly tables: label each cell with its column heading (shown when the table stacks).
+  document.querySelectorAll('table.sap-stack').forEach(function (t) {
+    var heads = Array.prototype.map.call(t.querySelectorAll('thead th'), function (th) { return th.textContent.trim(); });
+    t.querySelectorAll('tbody tr').forEach(function (tr) {
+      Array.prototype.forEach.call(tr.children, function (td, i) { if (heads[i]) { td.setAttribute('data-l', heads[i]); } });
+    });
+  });
+
   // Confirm dangerous actions (cancel booking, delete pet…)
   document.addEventListener('submit', function (ev) {
     var msg = ev.target.getAttribute('data-confirm');

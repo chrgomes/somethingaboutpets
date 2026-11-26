@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="<?= e(asset('assets/css/pets-anim.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('assets/css/app.css')) ?>">
 
+    <script>try{if(sessionStorage.getItem('sap-logo-drawn')==='1')document.documentElement.className+=' sap-logo-seen';sessionStorage.setItem('sap-logo-drawn','1')}catch(e){}</script>
     <script src="https://cdn.lordicon.com/lordicon.js" defer></script>
 </head>
 

@@ -18,9 +18,20 @@ if (is_post() && ($_POST['action'] ?? '') === 'cancel') {
     csrf_check();
     if (can_client_cancel($b)) {
         q("UPDATE bookings SET status = 'cancelled', updated_at = ? WHERE id = ?", [now_sql(), $id]);
+        $paid = booking_payment($id);
+        $refunded = false;
+        if ($paid && $paid['status'] === 'paid' && $paid['provider'] !== 'manual') {
+            try {
+                refund_payment($paid);
+                $refunded = true;
+            } catch (Throwable $e) {
+                error_log('[sap refund] ' . $e->getMessage());
+            }
+        }
         notify_business('Booking #' . $id . ' cancelled by client',
-            "{$user['name']} cancelled their booking.\n\n" . booking_summary_text($b) . mail_footer(), $user['email']);
-        flash('success', 'Your booking has been cancelled.');
+            "{$user['name']} cancelled their booking.\n" . ($paid ? ($refunded ? "Their online payment was refunded automatically.\n" : "They had paid. Please arrange a refund.\n") : '')
+            . "\n" . booking_summary_text($b) . mail_footer(), $user['email']);
+        flash('success', 'Your booking has been cancelled.' . ($refunded ? ' Your payment has been refunded; it usually takes 5–10 working days to reach your account.' : ($paid ? ' We\'ll be in touch about your refund.' : '')));
     } else {
         flash('error', 'This booking can no longer be cancelled online. Please contact us.');
     }
@@ -45,6 +56,41 @@ account_nav('dashboard');
             <?php if ($b['notes']): ?><dt>Your notes</dt><dd><?= nl2br(e($b['notes'])) ?></dd><?php endif; ?>
             <?php if ($b['admin_note']): ?><dt>Message from us</dt><dd><?= nl2br(e($b['admin_note'])) ?></dd><?php endif; ?>
         </dl>
+        <?php $payState = payment_state($b); ?>
+        <?php if (in_array($b['status'], ['confirmed', 'completed'], true) || $payState === 'paid' || $payState === 'refunded'): ?>
+            <div class="sap-pay">
+                <div class="sap-pay-head"><strong>Payment</strong> <?= payment_badge($payState) ?></div>
+                <?php if ($payState === 'paid'): $pp = booking_payment($id); ?>
+                    <p class="sap-muted">Paid <?= e(money((int) $pp['amount_cents'])) ?> <?= e($pp['currency']) ?> on <?= e(fmt_date($pp['updated_at'])) ?>. Thank you!</p>
+                <?php elseif ($payState === 'refunded'): ?>
+                    <p class="sap-muted">This payment has been refunded. Refunds usually take 5–10 working days to reach your account.</p>
+                <?php elseif (can_pay_online($b)): ?>
+                    <p>Pay <?= e(money((int) $b['price_cents'])) ?> <?= e(pay_currency()) ?> securely online. You'll be taken to <?= stripe_enabled() ? 'Stripe' : 'PayPal' ?> to pay. We never see or store your card details.</p>
+                    <div class="sap-pay-btns">
+                        <?php if (stripe_enabled()): ?>
+                            <form method="post" action="<?= e(url('/account/pay.php')) ?>">
+                                <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int) $id ?>"><input type="hidden" name="provider" value="stripe">
+                                <button class="primary-btn2 sap-pay-card" type="submit"><i class="bi bi-credit-card"></i> Pay by card</button>
+                            </form>
+                        <?php endif; ?>
+                        <?php if (paypal_enabled()): ?>
+                            <form method="post" action="<?= e(url('/account/pay.php')) ?>">
+                                <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int) $id ?>"><input type="hidden" name="provider" value="paypal">
+                                <button class="sap-pay-paypal" type="submit">Pay with <strong>PayPal</strong></button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                    <p class="sap-muted sap-pay-note">Card payments also accept Apple Pay and Google Pay. See our <a href="<?= e(url('/payments.php')) ?>">payment policy</a>.</p>
+                <?php elseif ($payState === 'unpaid'): ?>
+                    <p class="sap-muted">We'll let you know how to pay. See our <a href="<?= e(url('/payments.php')) ?>">payment policy</a>.</p>
+                <?php else: ?>
+                    <p class="sap-muted">We'll confirm the price with you before your booking.</p>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+        <?php if (($_GET['pay'] ?? '') === 'cancelled'): ?>
+            <div class="sap-alert sap-alert-info">Payment cancelled. You haven't been charged.</div>
+        <?php endif; ?>
         <?php if ($b['status'] === 'pending'): ?>
             <p class="sap-muted">We've received your request and are holding this time for you. You'll get an email once it's confirmed.</p>
         <?php endif; ?>

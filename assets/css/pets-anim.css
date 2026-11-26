@@ -37,6 +37,10 @@
 .pet-mark--draw .pm-cat-eyes      { animation-delay: 1.6s; }
 .pet-mark--draw .pm-fills circle  { animation-delay: 1.75s; }
 
+/* Only draw the header logo on the first page of a visit */
+.sap-logo-seen .pet-mark--header .pm-stroke { animation: none; stroke-dashoffset: 0; }
+.sap-logo-seen .pet-mark--header .pm-fills > * { animation: none; opacity: 1; transform: none; }
+
 /* Wait for the element to scroll into view before drawing (set by pets-anim.js). */
 .pet-mark--waiting .pm-stroke,
 .pet-mark--waiting .pm-fills > * { animation-play-state: paused; }

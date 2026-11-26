@@ -33,13 +33,14 @@ try {
         $pdo->exec($stmt);
     }
     seed_defaults($pdo);
+    $migrated = run_migrations($pdo, db_driver());
     $hasAdmin = (bool) scalar("SELECT 1 FROM users WHERE role = 'admin' LIMIT 1");
 } catch (Throwable $e) {
     exit('Database error: ' . e($e->getMessage()) . '<br>Check the db settings in your config file.');
 }
 
 if ($hasAdmin) {
-    exit('Already installed. An admin account exists. Please delete install.php from the server now.');
+    exit('Already installed. An admin account exists.' . ($migrated ? " Database upgraded ($migrated new fields added)." : ' Database is up to date.') . ' Please delete install.php from the server now.');
 }
 
 if (is_post()) {

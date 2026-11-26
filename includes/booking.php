@@ -236,3 +236,50 @@ function booking_summary_text(array $b): string
         . 'Price: ' . money($b['price_cents'] === null ? null : (int) $b['price_cents']) . "\n"
         . ($b['notes'] !== '' && $b['notes'] !== null ? "Notes: {$b['notes']}\n" : '');
 }
+
+/** Bookings (with service, client and pets) that overlap [start, end]. */
+function bookings_between(string $start, string $end, array $statuses = ['pending', 'confirmed', 'completed']): array
+{
+    $in = implode(',', array_fill(0, count($statuses), '?'));
+    $list = rows(
+        "SELECT b.*, s.name AS service_name, s.kind, u.name AS client_name, u.phone AS client_phone, u.address AS client_address, u.email AS client_email
+         FROM bookings b JOIN services s ON s.id = b.service_id JOIN users u ON u.id = b.user_id
+         WHERE b.status IN ($in) AND b.start_at <= ? AND b.end_at >= ?
+         ORDER BY b.start_at",
+        array_merge($statuses, [$end, $start])
+    );
+    if (!$list) {
+        return [];
+    }
+    $ids = array_column($list, 'id');
+    $petRows = rows(
+        'SELECT bp.booking_id, p.name, p.species FROM booking_pets bp JOIN pets p ON p.id = bp.pet_id WHERE bp.booking_id IN ('
+        . implode(',', array_fill(0, count($ids), '?')) . ') ORDER BY p.name',
+        $ids
+    );
+    $pets = [];
+    foreach ($petRows as $pr) {
+        $pets[$pr['booking_id']][] = $pr['name'];
+    }
+    foreach ($list as &$b) {
+        $b['pet_names'] = $pets[$b['id']] ?? [];
+    }
+    return $list;
+}
+
+/** Private token for the admin's calendar feed (changes if the install key or DB password changes). */
+function calendar_feed_token(): string
+{
+    return substr(hash_hmac('sha256', 'sap-calendar-feed', cfg('app.install_key', '') . '|' . cfg('db.pass', '') . '|' . cfg('db.dsn', '')), 0, 32);
+}
+
+/** Google Maps directions link for an address. */
+function maps_link(string $address): string
+{
+    return 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode($address);
+}
+
+function tel_link(string $phone): string
+{
+    return 'tel:' . preg_replace('/[^0-9+]/', '', $phone);
+}

@@ -55,6 +55,41 @@ return [
         ],
     ],
 
+    'payments' => [
+        // Turn online payments on once at least one provider below is filled in.
+        'enabled'  => false,
+        'currency' => 'NZD',
+        // Stripe (main): Dashboard > Developers > API keys. Use sk_test_... keys until you're ready to go live.
+        'stripe' => [
+            'secret_key'     => '',   // sk_test_... or sk_live_...
+            // Dashboard > Developers > Webhooks > Add endpoint: https://yourdomain.com/webhooks/stripe.php
+            // events: checkout.session.completed, charge.refunded. Then paste the signing secret here.
+            'webhook_secret' => '',   // whsec_...
+        ],
+        // PayPal (second option): developer.paypal.com > Apps & Credentials. Use Sandbox until you're ready.
+        'paypal' => [
+            'mode'      => 'sandbox', // 'sandbox' or 'live'
+            'client_id' => '',
+            'secret'    => '',
+        ],
+    ],
+
+    // Pet photos and vaccination documents. Best kept OUTSIDE public_html, e.g. '/home/CPANELUSER/sap-uploads'.
+    // Leave '' to use storage/uploads inside the site (blocked from the web by .htaccess).
+    'uploads' => [
+        'path' => '',
+    ],
+
+    // Wording used in the Terms and Payment policy pages. Your friend should check these match how she works.
+    'policy' => [
+        'business_name'        => 'Something About Pets',
+        'payment_due'          => 'before the booking starts',  // when confirmed bookings must be paid
+        'late_cancel_charge'   => 50,   // % of the price charged for cancellations inside the notice period (0 = no charge)
+        'no_show_charge'       => 100,  // % charged if we arrive and can't get access to your pet
+        'other_payment_methods'=> 'cash or bank transfer',  // shown as alternatives to paying online ('' to hide)
+        'effective_date'       => '',   // e.g. '1 January 2027'. Leave empty to use the date the file was last changed
+    ],
+
     'booking' => [
         'slot_step_minutes'     => 30,  // how far apart the start times offered to clients are
         'buffer_minutes'        => 15,  // travel/gap time kept free between bookings

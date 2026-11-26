@@ -84,7 +84,7 @@ admin_nav('availability');
                 <form method="post" class="sap-form">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="hours">
-                    <table class="sap-table sap-hours">
+                    <table class="sap-table sap-hours sap-stack">
                         <thead><tr><th>Day</th><th>Open?</th><th>From</th><th>To</th></tr></thead>
                         <tbody>
                         <?php foreach ([1, 2, 3, 4, 5, 6, 0] as $d): $h = $hours[$d] ?? ['is_open' => 0, 'open_time' => '08:00', 'close_time' => '18:00']; ?>

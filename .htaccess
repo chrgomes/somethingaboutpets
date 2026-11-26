@@ -10,7 +10,7 @@ Options -Indexes
 
 # Never serve private folders or files
 RedirectMatch 404 /\.git
-RedirectMatch 404 /(includes|config|setup|vendor)(/|$)
+RedirectMatch 404 /(includes|config|setup|vendor|storage)(/|$)
 <FilesMatch "\.(sql|md|lock|log|ini|sh)$|^(composer\.json|LICENSE)$">
     Require all denied
 </FilesMatch>

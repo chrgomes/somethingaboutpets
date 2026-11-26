@@ -70,4 +70,6 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/mailer.php';
 require_once __DIR__ . '/booking.php';
+require_once __DIR__ . '/payments.php';
+require_once __DIR__ . '/pets.php';
 require_once __DIR__ . '/layout.php';

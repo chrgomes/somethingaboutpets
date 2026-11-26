@@ -81,7 +81,7 @@ page_banner('Create your account', 'Book online, keep your pets\' details in one
             <input id="password_confirm" type="password" name="password_confirm" required minlength="8" autocomplete="new-password">
             <label class="sap-check">
                 <input type="checkbox" name="agree" value="1" required <?= !empty($_POST['agree']) ? 'checked' : '' ?>>
-                I agree to the <a href="<?= e(url('/terms.php')) ?>" target="_blank">terms</a> and <a href="<?= e(url('/privacy.php')) ?>" target="_blank">privacy policy</a>.
+                I agree to the <a href="<?= e(url('/terms.php')) ?>" target="_blank">terms</a>, <a href="<?= e(url('/payments.php')) ?>" target="_blank">payment policy</a> and <a href="<?= e(url('/privacy.php')) ?>" target="_blank">privacy policy</a>.
             </label>
             <button class="primary-btn2 sap-btn-block" type="submit">Create account</button>
         </form>

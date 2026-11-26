@@ -147,9 +147,11 @@ account_nav('book');
                     <label class="sap-choice sap-choice--pet">
                         <input type="checkbox" name="pets[]" value="<?= (int) $p['id'] ?>" <?= in_array((int) $p['id'], $petIds, true) ? 'checked' : '' ?>>
                         <span class="sap-choice-body">
-                            <i class="bi <?= $p['species'] === 'cat' ? 'bi-emoji-heart-eyes' : 'bi-heart' ?>" aria-hidden="true"></i>
-                            <strong><?= e($p['name']) ?></strong>
-                            <span class="sap-muted"><?= e(ucfirst($p['species'])) ?><?= $p['breed'] ? ' · ' . e($p['breed']) : '' ?></span>
+                            <span class="sap-pet-avatar"><?php if ($u = pet_photo_url($p)): ?><img src="<?= e($u) ?>" alt=""><?php else: ?><i class="bi bi-heart" aria-hidden="true"></i><?php endif; ?></span>
+                            <span class="sap-pet-avatar-text">
+                                <strong><?= e($p['name']) ?></strong>
+                                <span class="sap-muted"><?= e(ucfirst($p['species'])) ?><?= $p['breed'] ? ' · ' . e($p['breed']) : '' ?></span>
+                            </span>
                         </span>
                     </label>
                 <?php endforeach; ?>
@@ -161,7 +163,7 @@ account_nav('book');
             <h2><span class="sap-step-no">4</span> Anything we should know?</h2>
             <label for="notes" class="visually-hidden">Notes</label>
             <textarea id="notes" name="notes" rows="4" maxlength="2000" placeholder="Key or door code arrangements, feeding, routes your dog loves…"><?= e($notes) ?></textarea>
-            <p class="sap-muted">You can cancel online up to <?= (int) cfg('booking.cancel_notice_hours', 24) ?> hours before your booking.</p>
+            <p class="sap-muted">Nothing is charged now.<?= payments_enabled() ? " Once we confirm, you can pay by card or PayPal." : "" ?> You can cancel online up to <?= (int) cfg('booking.cancel_notice_hours', 24) ?> hours before your booking. See our <a href="<?= e(url('/terms.php')) ?>">terms</a> and <a href="<?= e(url('/payments.php')) ?>">payment policy</a>.</p>
             <button class="primary-btn2" type="submit">Send booking request</button>
         </section>
     </form>

@@ -21,7 +21,8 @@ function booking_rows(array $list): void
             . '<span class="sap-booking-main"><strong>' . e($b['service_name']) . '</strong>'
             . '<span>' . e(booking_when($b)) . '</span>'
             . ($pets ? '<span class="sap-muted">' . e($pets) . '</span>' : '') . '</span>'
-            . status_badge($b['status']) . '</a>';
+            . '<span class="sap-badges">' . status_badge($b['status'])
+            . (can_pay_online($b) ? '<span class="sap-badge sap-badge-pending">Pay now</span>' : '') . '</span></a>';
     }
 }
 

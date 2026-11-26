@@ -14,7 +14,8 @@
     io.observe(el);
   }
 
-  /* 1. Marks below the fold wait until they are on screen before drawing. */
+  /* 1. The header logo draws itself once per visit (see the small script in head.php). */
+  /* Marks below the fold wait until they are on screen before drawing. */
   document.querySelectorAll('.pet-mark--draw[data-draw-on-scroll]').forEach(function (mark) {
     if (reduce) { return; }
     mark.classList.add('pet-mark--waiting');

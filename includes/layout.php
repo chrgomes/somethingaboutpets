@@ -71,7 +71,8 @@ function admin_nav(string $active): void
     } catch (Throwable $e) {
     }
     sub_nav([
-        'dashboard'    => ['Overview', '/admin/'],
+        'dashboard'    => ['Today', '/admin/'],
+        'calendar'     => ['Calendar', '/admin/calendar.php'],
         'bookings'     => ['Bookings' . ($pending ? " ($pending)" : ''), '/admin/bookings.php'],
         'availability' => ['Availability', '/admin/availability.php'],
         'services'     => ['Services & prices', '/admin/services.php'],

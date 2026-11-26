@@ -44,3 +44,49 @@ function seed_defaults(PDO $pdo): void
         }
     }
 }
+
+/**
+ * Columns added after the first release. Each is added only if it's missing, so running
+ * install.php again on an existing site safely upgrades the database.
+ * [table, column, MySQL definition, SQLite definition]
+ */
+function schema_migrations(): array
+{
+    $t = fn($c) => ['pets', $c, 'TEXT NULL', 'TEXT NULL'];
+    $v = fn($c, $n = 120) => ['pets', $c, "VARCHAR($n) NOT NULL DEFAULT ''", "VARCHAR($n) NOT NULL DEFAULT ''"];
+    return [
+        $v('sex', 10), $v('desexed', 10), ['pets', 'weight_kg', 'DECIMAL(5,1) NULL', 'REAL NULL'],
+        $v('colour'), $v('microchip', 40), $v('council_reg', 40), ['pets', 'photo_file_id', 'INT UNSIGNED NULL', 'INTEGER NULL'],
+        $v('good_with_dogs', 10), $v('good_with_cats', 10), $v('good_with_kids', 10), $v('off_lead', 10),
+        $t('behaviour'), $t('anxiety_triggers'), $t('walking'), $t('feeding'), $t('medical'),
+        $v('vet_clinic'), $v('vet_phone', 40), $v('vet_address', 255),
+        $v('emergency_name'), $v('emergency_phone', 40),
+        ['pets', 'emergency_authorised', 'TINYINT(1) NOT NULL DEFAULT 0', 'INTEGER NOT NULL DEFAULT 0'],
+        ['pets', 'emergency_limit_cents', 'INT NULL', 'INTEGER NULL'],
+        $v('emergency_signed_name'), ['pets', 'emergency_signed_at', 'DATETIME NULL', 'DATETIME NULL'],
+        ['pets', 'photos_public_ok', 'TINYINT(1) NOT NULL DEFAULT 0', 'INTEGER NOT NULL DEFAULT 0'],
+        ['pets', 'updated_at', 'DATETIME NULL', 'DATETIME NULL'],
+    ];
+}
+
+function run_migrations(PDO $pdo, string $driver): int
+{
+    $added = 0;
+    $cache = [];
+    foreach (schema_migrations() as [$table, $col, $mysql, $sqlite]) {
+        if (!isset($cache[$table])) {
+            $cols = [];
+            $sql = $driver === 'sqlite' ? "PRAGMA table_info($table)" : "SHOW COLUMNS FROM `$table`";
+            foreach ($pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $r) {
+                $cols[] = strtolower($r['name'] ?? $r['Field']);
+            }
+            $cache[$table] = $cols;
+        }
+        if (!in_array(strtolower($col), $cache[$table], true)) {
+            $pdo->exec("ALTER TABLE $table ADD COLUMN $col " . ($driver === 'sqlite' ? $sqlite : $mysql));
+            $cache[$table][] = strtolower($col);
+            $added++;
+        }
+    }
+    return $added;
+}

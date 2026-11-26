@@ -1,4 +1,9 @@
 <?php
+$__user = null;
+try {
+    $__user = current_user();
+} catch (Throwable $e) {
+}
 $__social = array_filter((array) cfg('business.social', []));
 $__icons = ['facebook' => 'bxl-facebook', 'instagram' => 'bxl-instagram', 'twitter' => 'bxl-twitter'];
 $__phone = (string) cfg('business.phone', '');
@@ -55,9 +60,15 @@ $__phone = (string) cfg('business.phone', '');
                         <?php else: ?>
                         <h3>Account</h3>
                         <ul class="sap-footer-links">
-                            <li><a href="<?= e(url('/login.php')) ?>">Log in</a></li>
-                            <li><a href="<?= e(url('/register.php')) ?>">Create an account</a></li>
-                            <li><a href="<?= e(url('/book.php')) ?>">Book online</a></li>
+                            <?php if (!empty($__user)): ?>
+                                <li><a href="<?= e(url($__user['role'] === 'admin' ? '/admin/' : '/account/')) ?>"><?= $__user['role'] === 'admin' ? 'Admin' : 'My account' ?></a></li>
+                                <li><a href="<?= e(url('/book.php')) ?>">Book online</a></li>
+                                <li><a href="<?= e(url('/logout.php')) ?>">Log out</a></li>
+                            <?php else: ?>
+                                <li><a href="<?= e(url('/login.php')) ?>">Log in</a></li>
+                                <li><a href="<?= e(url('/register.php')) ?>">Create an account</a></li>
+                                <li><a href="<?= e(url('/book.php')) ?>">Book online</a></li>
+                            <?php endif; ?>
                         </ul>
                         <?php endif; ?>
                     </div>
@@ -73,6 +84,7 @@ $__phone = (string) cfg('business.phone', '');
                     <ul class="footer-btm-menu">
                         <li><a href="<?= e(url('/privacy.php')) ?>">Privacy Policy</a></li>
                         <li><a href="<?= e(url('/terms.php')) ?>">Terms &amp; Conditions</a></li>
+                        <li><a href="<?= e(url('/payments.php')) ?>">Payments &amp; Refunds</a></li>
                     </ul>
                 </div>
             </div>

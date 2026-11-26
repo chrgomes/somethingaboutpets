@@ -106,3 +106,46 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     is_read     TINYINT(1)   NOT NULL DEFAULT 0,
     created_at  DATETIME     NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS payments (
+    id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    booking_id    INT UNSIGNED NOT NULL,
+    provider      VARCHAR(10)  NOT NULL,                 -- stripe, paypal, manual
+    provider_ref  VARCHAR(255) NOT NULL DEFAULT '',      -- Stripe checkout session / PayPal order id
+    capture_ref   VARCHAR(255) NOT NULL DEFAULT '',      -- Stripe payment intent / PayPal capture id (used for refunds)
+    amount_cents  INT          NOT NULL,
+    currency      CHAR(3)      NOT NULL DEFAULT 'NZD',
+    status        VARCHAR(12)  NOT NULL DEFAULT 'created', -- created, paid, refunded, failed
+    note          VARCHAR(255) NOT NULL DEFAULT '',
+    created_at    DATETIME     NOT NULL,
+    updated_at    DATETIME     NOT NULL,
+    KEY idx_payments_booking (booking_id),
+    KEY idx_payments_ref (provider_ref),
+    CONSTRAINT fk_payments_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS pet_files (
+    id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    pet_id         INT UNSIGNED NOT NULL,
+    kind           VARCHAR(12)  NOT NULL DEFAULT 'photo',   -- photo, id, vaccine
+    stored_name    VARCHAR(80)  NOT NULL,
+    original_name  VARCHAR(190) NOT NULL DEFAULT '',
+    mime           VARCHAR(60)  NOT NULL,
+    size_bytes     INT          NOT NULL DEFAULT 0,
+    label          VARCHAR(120) NOT NULL DEFAULT '',
+    created_at     DATETIME     NOT NULL,
+    KEY idx_pet_files_pet (pet_id),
+    CONSTRAINT fk_pet_files_pet FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS pet_vaccinations (
+    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    pet_id      INT UNSIGNED NOT NULL,
+    name        VARCHAR(80)  NOT NULL,
+    given_on    DATE         NULL,
+    expires_on  DATE         NULL,
+    file_id     INT UNSIGNED NULL,
+    created_at  DATETIME     NOT NULL,
+    KEY idx_vax_pet (pet_id),
+    CONSTRAINT fk_vax_pet FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

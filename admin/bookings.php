@@ -42,8 +42,8 @@ admin_nav('bookings');
             <p class="sap-muted">No bookings here.</p>
         <?php else: ?>
         <div class="table-responsive">
-            <table class="sap-table">
-                <thead><tr><th>#</th><th>When</th><th>Service</th><th>Client</th><th>Status</th><th></th></tr></thead>
+            <table class="sap-table sap-stack">
+                <thead><tr><th>#</th><th>When</th><th>Service</th><th>Client</th><th>Status</th><th>Payment</th><th></th></tr></thead>
                 <tbody>
                 <?php foreach ($list as $b): ?>
                     <tr>
@@ -52,6 +52,7 @@ admin_nav('bookings');
                         <td><?= e($b['service_name']) ?></td>
                         <td><?= e($b['client_name']) ?></td>
                         <td><?= status_badge($b['status']) ?></td>
+                        <td><?= payment_badge(payment_state($b)) ?></td>
                         <td><a href="<?= e(url('/admin/booking.php?id=' . (int) $b['id'])) ?>">Open</a></td>
                     </tr>
                 <?php endforeach; ?>

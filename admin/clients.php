@@ -35,7 +35,8 @@ if ($id) {
                     <?php if (!$pets): ?><p class="sap-muted">No pets added.</p><?php endif; ?>
                     <?php foreach ($pets as $p): ?>
                         <div class="sap-pet-mini">
-                            <strong><?= e($p['name']) ?></strong> <span class="sap-muted"><?= e(ucfirst($p['species'])) ?><?= $p['breed'] ? ' · ' . e($p['breed']) : '' ?><?= $p['age'] ? ' · ' . e($p['age']) : '' ?></span>
+                            <?php if ($u = pet_photo_url($p)): ?><img class="sap-pet-mini-photo" src="<?= e($u) ?>" alt=""><?php endif; ?>
+                            <strong><a href="<?= e(url('/admin/pet.php?id=' . (int) $p['id'])) ?>"><?= e($p['name']) ?></a></strong> <span class="sap-muted"><?= e(ucfirst($p['species'])) ?><?= $p['breed'] ? ' · ' . e($p['breed']) : '' ?><?= $p['age'] ? ' · ' . e($p['age']) : '' ?></span>
                             <?php if ($p['notes']): ?><p><?= nl2br(e($p['notes'])) ?></p><?php endif; ?>
                         </div>
                     <?php endforeach; ?>
@@ -89,7 +90,7 @@ admin_nav('clients');
             <p class="sap-muted">No clients found.</p>
         <?php else: ?>
         <div class="table-responsive">
-            <table class="sap-table">
+            <table class="sap-table sap-stack">
                 <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Pets</th><th>Bookings</th></tr></thead>
                 <tbody>
                 <?php foreach ($clients as $c): ?>
